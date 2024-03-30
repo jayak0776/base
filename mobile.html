@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Remote Control</title>
+</head>
+<body>
+  <button id="touchButton">Simulate Touch Event</button>
+  <script>
+    // Create a WebSocket connection to the PC
+    const ws = new WebSocket('ws://YOUR_PC_IP_ADDRESS:8080');
+
+    // Event handler for WebSocket connection
+    ws.addEventListener('open', () => {
+      console.log('Connected to PC');
+    });
+
+    // Event handler for WebSocket messages
+    ws.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === 'status') {
+        console.log('Received status:', message.status);
+      } else {
+        console.log('Received unknown message:', message);
+      }
+    });
+
+    // Function to send control command
+    function sendControlCommand(command) {
+      ws.send(JSON.stringify({ type: 'control', command: command }));
+    }
+
+    // Event listener for the touch button
+    document.getElementById('touchButton').addEventListener('click', () => {
+      // Example: Send a control command to simulate a touch event
+      sendControlCommand({ type: 'touch', x: 100, y: 200 });
+    });
+  </script>
+</body>
+</html>
